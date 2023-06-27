@@ -19,7 +19,19 @@ export class UserService {
   }
 
   findOne(id) {
-    return this.userRepository.findOne(id);
+    try
+    {
+      return this.userRepository.find({
+        where: {
+          id:1
+        }
+    })
+    }
+    catch(err)
+    {
+      console.log(err)
+    }
+    
   }
 
   // update(id: number, updateUserDto: UpdateUserDto) {
