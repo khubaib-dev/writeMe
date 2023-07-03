@@ -63,6 +63,25 @@ export class UserController {
     });
   }
 
+  @Post('verifyEmail')
+  async verifyEmail(@Body() user, @Res() res)
+  {
+    if(await this.verificationService.verifyEmail(user))
+    {
+      return res.status(200).json({
+        status: 200,
+        code: 'ok',
+      });
+    }
+    else
+    {
+      return res.status(200).json({
+        status: 404,
+        code: 'error',
+        message: 'Wrong Verification Code',
+      });
+    }
+  }
   
 
 

@@ -22,6 +22,17 @@ export class VerificationService {
     return `This action returns all verification`;
   }
 
+  async verifyEmail(user)
+  {
+    const id = user.id
+    const verifyCode = await this.verifyRepository.findOne({ where: { id } })
+      if (verifyCode.verification_code === user.code) {
+        return true
+      } else {
+        return false
+      }
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} verification`;
   }
