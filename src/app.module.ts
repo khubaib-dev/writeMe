@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MailsService } from './mails/mails.service';
+import { VerificationModule } from './verification/verification.module';
 
 
 @Module({
@@ -19,9 +21,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       autoLoadEntities: true,
       synchronize: true, // set to false in production
     }),
+    VerificationModule,
   
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, MailsService],
 })
 export class AppModule {}
