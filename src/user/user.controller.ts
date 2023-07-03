@@ -43,7 +43,7 @@ export class UserController {
     const message = `Your verification code is: ${randomCode}`
     user.verify_code = randomCode
     await this.mailService.sendMail(to, subject, message)
-
+    
     this.verificationService.create(randomCode)
     .then(data => {
       return res.status(200).json({
