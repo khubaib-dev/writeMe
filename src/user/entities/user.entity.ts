@@ -18,6 +18,9 @@ export class User {
 
     @Column({})
     last_name: string
+    
+    @Column({})
+    user_name: string
 
     @Column()
     email: string
@@ -48,8 +51,8 @@ export class User {
     @Column({nullable: true})
     verify_code: string
 
-    @Column({nullable: true, type: 'bigint'})
-    amember_id: bigint
+    @Column({nullable: true})
+    amember_id: string
 
     @Column({nullable: true})
     pic: string

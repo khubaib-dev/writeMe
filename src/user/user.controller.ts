@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Res, Post, Patch, Put, Delete, Body, Param } from '@nestjs/common';
 import { User } from './entities/user.entity'
 
 import { UserService } from './user.service'
@@ -12,26 +12,6 @@ export class UserController {
     private readonly mailService: MailsService,
     private readonly verificationService: VerificationService
     ) {}
-
-  @Post()
-  async createUser(@Body() user: User, @Res() res){
-    this.userService.createUser(user)
-    .then(data => {
-      return res.status(200).json({
-        status: 200,
-        code: 'ok',
-        data,
-      });
-    })
-    .catch(error => {
-      // Handle error
-      return res.status(500).json({
-        status: 500,
-        code: 'error',
-        message: 'An error occurred.',
-      });
-    });
-  }
   
   @Post('sendEmail')
   async sendEmail(@Body() user, @Res() res)
@@ -68,9 +48,24 @@ export class UserController {
   {
     if(await this.verificationService.verifyEmail(user))
     {
-      return res.status(200).json({
-        status: 200,
-        code: 'ok',
+      const aMemberUser = await this.userService.createAMemberUser(user)
+      user.amember_id = aMemberUser.data[0].login
+      this.userService.create(user)
+      .then(data => {
+        return res.status(200).json({
+          status: 200,
+          code: 'ok',
+          data,
+        });
+      })
+      .catch(error => {
+        // Handle error
+        console.log('Error side')
+        return res.status(500).json({
+          status: 500,
+          code: 'error',
+          message: error,
+        });
       });
     }
     else
@@ -126,10 +121,24 @@ findOne(@Param('id') id: number, @Res() res) {
     // });
 }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.userService.update(+id, updateUserDto);
-  // }
+  @Patch(':id')
+  update(@Param('id') id, @Body() user, @Res() res) {
+    this.userService.update(id, user)
+    .then(data => {
+        return res.status(200).json({
+          status: 200,
+          code: 'ok',
+          data,
+        });
+      })
+      .catch(error => {
+        return res.status(500).json({
+          status: 500,
+          code: 'error',
+          message: 'An error occurred.',
+        });
+      });
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
