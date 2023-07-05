@@ -26,7 +26,8 @@ export class AuthService {
 
     try {
       const response = await axios.get(`https://backend.writeme.ai/amember/api/check-access/by-login-pass`,payload)
-      response.data.access_token='token will here'
+      if(response.data.ok)
+        response.data.access_token='token will here'
       return response.data
       // const token = { sub: response.data.user_id,
       //    username: response.data.login };
