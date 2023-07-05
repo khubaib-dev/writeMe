@@ -6,6 +6,11 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailsService } from './mails/mails.service';
 import { VerificationModule } from './verification/verification.module';
+import { AuthModule } from './auth/auth.module';
+import { AuthController } from './auth/auth.controller';
+import { AuthService } from './auth/auth.service';
+import { JwtService } from '@nestjs/jwt'
+
 
 
 @Module({
@@ -22,9 +27,10 @@ import { VerificationModule } from './verification/verification.module';
       synchronize: true, // set to false in production
     }),
     VerificationModule,
+    AuthModule,
   
   ],
-  controllers: [AppController],
-  providers: [AppService, MailsService],
+  controllers: [AppController,AuthController],
+  providers: [AppService, MailsService, AuthService, JwtService],
 })
 export class AppModule {}

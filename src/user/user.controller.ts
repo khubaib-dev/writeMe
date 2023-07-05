@@ -82,7 +82,6 @@ export class UserController {
 
   @Get()
   findAll(@Res() res) {
-
     this.userService.findAll()
     .then(data => {
       return res.status(200).json({
