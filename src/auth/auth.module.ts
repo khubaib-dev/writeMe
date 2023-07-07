@@ -9,12 +9,17 @@ import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     JwtModule.register({
-      global: true,
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '6s' },
+      secret: process.env.JWT_SECRET_KEY,
+      secretOrPrivateKey: process.env.JWT_SECRET_KEY,
+      signOptions: { expiresIn: '1h' },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [AuthService],
+  exports: [JwtModule],
 })
-export class AuthModule {}
+export class AuthModule {
+  constructor() {
+    console.log(`My const token is: ${process.env.JWT_SECRET_KEY}`);
+  }
+}

@@ -1,18 +1,21 @@
 import { Injectable, Inject } from '@nestjs/common'
 import axios, {AxiosRequestConfig} from 'axios'
-import { JwtService } from '@nestjs/jwt'
+import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from './constants'
+import { UserService } from '../user/user.service'
+
 
 @Injectable()
 export class AuthService {
-
-  // constructor(@Inject(JwtService) private readonly jwtService: JwtService) {
-    
-  // }
   
-
-  async login(user)
-  {
+  constructor(
+    private jwtService: JwtService,
+    private userService: UserService
+    ) {}
+    
+    
+    async login(user)
+    {
     const apiKey = process.env.A_MEMBER_KEY;
     const login = user.username;
     const password = user.password;
@@ -27,13 +30,38 @@ export class AuthService {
     try {
       const response = await axios.get(`https://backend.writeme.ai/amember/api/check-access/by-login-pass`,payload)
       if(response.data.ok)
-        response.data.access_token='token will here'
+      { 
+        const dbUser = this.userService.getUserByEmail(response.data.email)
+        console.log(dbUser)
+        const userId = response.data.user_id
+
+        const payload = { userId };
+        try
+        {
+          const token = this.jwtService.signAsync(payload)
+          console.log(`Token is: ${token}`)
+        }
+        catch(err)
+        {
+          console.log(`Token error ${err}`) 
+        }
+
+        // const tokenPayload = { sub: 8, username: 'khubaib_dev' };
+
+        // try{
+        //   const token =  await this.jwtService.signAsync(tokenPayload)
+        //   console.log(`token is: ${token}`)
+        // } catch (err) {
+        //   console.log(`Token error ${err}`)
+        // }
+
+        // return {
+        //   access_token: await this.jwtService.signAsync(tokenPayload),
+        // }
+          // response.data.access_token = 'access_token'
+      }
       return response.data
-      // const token = { sub: response.data.user_id,
-      //    username: response.data.login };
-      // return {
-      //   access_token: await this.jwtService.signAsync(token),
-      // };
+      
     } catch (error) {
       console.log(`Error is: ${error}`)
     }

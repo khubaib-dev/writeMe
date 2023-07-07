@@ -63,6 +63,14 @@ export class UserService {
     
   }
 
+  getUserByEmail(email)
+  {
+    return this.userRepository.find({
+      where: {
+        email
+      }
+    })
+  }
 
   async update(id,user) {
     await this.userRepository.update(id,user)
