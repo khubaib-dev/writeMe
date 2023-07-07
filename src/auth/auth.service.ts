@@ -19,20 +19,23 @@ export class AuthService {
     const apiKey = process.env.A_MEMBER_KEY;
     const login = user.username;
     const password = user.password;
+    const email = user.email;
 
     const payload = {
       params: {
       _key: apiKey,
+      // email: email
       login: login,
       pass: password
     }}
 
     try {
+      // const response = await axios.get(`https://backend.writeme.ai/amember/api/check-access/by-email`,payload)
       const response = await axios.get(`https://backend.writeme.ai/amember/api/check-access/by-login-pass`,payload)
       if(response.data.ok)
       { 
         const dbUser = this.userService.getUserByEmail(response.data.email)
-        console.log(dbUser)
+        
         const userId = response.data.user_id
 
         const payload = { userId };
