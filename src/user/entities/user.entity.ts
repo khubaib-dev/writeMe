@@ -1,4 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn,
+    BeforeInsert,  Timestamp } from 'typeorm'
+import * as bcrypt from 'bcrypt'
+import { Exclude } from 'class-transformer'
+
 
 enum UserRole {
     ADMIN = 'admin',
@@ -29,6 +33,7 @@ export class User {
      default: () => 'CURRENT_TIMESTAMP'})
     email_verified_at: Date
 
+    @Exclude()
     @Column()
     password: string
 
@@ -63,4 +68,12 @@ export class User {
     @Column({nullable: true})
     login_type: string
 
+    @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 8);
+  }
+
+  async validatePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  }
 }
